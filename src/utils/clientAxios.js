@@ -26,7 +26,7 @@ clientAxios.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response) {
-            return Promise.reject(error.response.data);
+            return Promise.reject(error.response.data.message);
         } else if (error.request) {
             return Promise.reject(error.request);
         } else {

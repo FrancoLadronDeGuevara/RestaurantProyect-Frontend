@@ -12,10 +12,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { handleError } from "../../utils/handleInputError.js"
-import clientAxios from "../../utils/clientAxios.js";
-import {useDispatch} from "react-redux"
-import { getUser } from "../../redux/actions/userActions.js";
+import { handleError } from "../../utils/handleInputError.js";
+import { useDispatch } from "react-redux";
+import {  getUser, loginUser } from "../../redux/actions/userActions.js";
+import { autoCloseAlert } from "../../utils/alerts.js";
 
 const confIcon = {
   position: "absolute",
@@ -28,8 +28,8 @@ const strongEmailRegex =
   /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
 
 const LoginForm = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
@@ -41,21 +41,18 @@ const LoginForm = () => {
     e.preventDefault();
 
     if (!email || !password || emailError)
-      return alert(
-        "Por favor, rellena el formulario correctamente"
-      );
+      return alert("Por favor, rellena el formulario correctamente");
 
-    await clientAxios
-      .post(`/users/login-user`, { email, password })
-      .then(() => {
-        navigate("/")
-        dispatch(getUser())
-      })
+    await dispatch(loginUser({ email, password }))
+    .then(() => {
+      autoCloseAlert("Bienvenido", "success");
+      navigate("/");
+      dispatch(getUser())
+    })
       .catch((error) => {
-        alert(error.message);
+        console.log(error);
       });
   };
-
 
   return (
     <>

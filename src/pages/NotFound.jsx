@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
-import error404 from "../assets/error404.jpg";
+
 
 const NotFoundPage = () => {
   const rootStyle = {
@@ -17,7 +17,7 @@ const NotFoundPage = () => {
 
   return (
     <div style={rootStyle}>
-        <img src={error404}	 alt="Error 404" style={imageStyle} />
+        {/* <img src={error404}	 alt="Error 404" style={imageStyle} /> */}
       <Typography variant="h4" gutterBottom>
         Página no encontrada
       </Typography>
