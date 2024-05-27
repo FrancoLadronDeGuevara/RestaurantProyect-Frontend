@@ -43,15 +43,17 @@ const LoginForm = () => {
     if (!email || !password || emailError)
       return alert("Por favor, rellena el formulario correctamente");
 
-    await dispatch(loginUser({ email, password }))
+
+    dispatch(loginUser({ email, password })).unwrap()
     .then(() => {
-      autoCloseAlert("Bienvenido", "success");
+      autoCloseAlert("BIENVENIDO", "success");
       navigate("/");
-      dispatch(getUser())
+      dispatch(getUser());
     })
-      .catch((error) => {
-        console.log(error);
-      });
+    .catch((error) => {
+      autoCloseAlert(error.message, "error");
+    });
+    
   };
 
   return (

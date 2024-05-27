@@ -27,13 +27,17 @@ export const customAlert = (title, action = null) => {
 export const autoCloseAlert = (title, type) => {
   Swal.fire({
     position: "bottom",
-    title: `<div class="text-modal-container"><span class="text-${type}-modal">${title}</span></div>`,
+    title: `<div class="text-modal-container"><span class="text-modal">${title}</span></div>`,
     color: "black",
+    icon: type,
     showConfirmButton: false,
     toast: true,
-    width: 300,
-    timer: 2000,
-    background: "#333333",
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    },
     customClass: {
       container: "alert-container",
       popup: type,

@@ -7,7 +7,7 @@ import CartDrawer from "../../CartDrawer/CartDrawer";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../../redux/actions/userActions";
 import { useNavigate } from "react-router-dom";
-import { customAlert } from "../../../utils/alerts";
+import { autoCloseAlert, customAlert } from "../../../utils/alerts";
 
 const UserMenu = () => {
   const navigate = useNavigate();
@@ -16,7 +16,10 @@ const UserMenu = () => {
 
   const handleLogoutUser = () => {
     customAlert("¿Deseas cerrar sesión?", () => {
-      dispatch(logoutUser());
+      dispatch(logoutUser()).then(() => {
+        autoCloseAlert("SESION CERRADA", "success");
+        navigate("/");
+      })
     });
   };
 

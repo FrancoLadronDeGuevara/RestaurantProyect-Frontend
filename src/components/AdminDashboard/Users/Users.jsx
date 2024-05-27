@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   Container,
   Table,
   TableBody,
@@ -8,17 +9,21 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import {Paper} from "@mui/material";
+import { Paper } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import { getAllUsers } from "../../../redux/actions/userActions";
 import Loader from "../../Loader/Loader";
+import ModalEditUser from "./ModalEditUser";
 
-function createData(firstname, lastname, email, active, role) {
-  return { firstname, lastname, email, active, role };
+function createData(_id, firstname, lastname, email, active, role) {
+  return { _id, firstname, lastname, email, active, role };
 }
 
 const Users = () => {
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const dispatch = useDispatch();
   const { users, loading } = useSelector((state) => state.user);
 
@@ -30,6 +35,7 @@ const Users = () => {
     users &&
     users.map((user) =>
       createData(
+        user._id,
         user.firstname,
         user.lastname,
         user.email,
@@ -44,22 +50,22 @@ const Users = () => {
         <Loader />
       ) : (
         <Container>
-          <TableContainer component={Paper} sx={{ overflowX: "auto", my: 2}}>
+          <TableContainer component={Paper} sx={{ overflowX: "auto", my: 2 }}>
             <Table aria-label="collapsible table" size="small">
-              <TableHead>
+              <TableHead sx={{ backgroundColor: "#333333" }}>
                 <TableRow>
-                  <TableCell>Usuario</TableCell>
-                  <TableCell align="left">
+                  <TableCell sx={{ color: "#ffc139" }}>Usuario</TableCell>
+                  <TableCell align="left" sx={{ color: "#ffc139" }}>
                     Email
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="left" sx={{ color: "#ffc139" }}>
                     Activo
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="center" sx={{ color: "#ffc139" }}>
                     Rol
                   </TableCell>
-                  <TableCell align="center">
-                    Acciones
+                  <TableCell align="center" sx={{ color: "#ffc139" }}>
+                    Editar
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -73,17 +79,50 @@ const Users = () => {
                       {row.firstname} {row.lastname}
                     </TableCell>
                     <TableCell align="left">{row.email}</TableCell>
-                    <TableCell align="left">{row.active ? "Si" : "No"}</TableCell>
-                    <TableCell align="left">{row.role == "admin" ? "Admin" : "Usuario"}</TableCell>
+                    <TableCell align="left">
+                      {row.active ? (
+                        <Chip label="Si" color="success" />
+                      ) : (
+                        <Chip label="No" color="error" />
+                      )}
+                    </TableCell>
                     <TableCell align="center">
-                      <Button>Ed</Button>
-                      <Button>EL</Button>
+                      {row.role == "admin" ? (
+                        <Chip label="Admin" color="warning" />
+                      ) : (
+                        <Chip label="Usuario" color="primary" />
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        onClick={() => {
+                          setSelectedUser(row);
+                          setOpenModal(true);
+                        }}
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          mr: { xs: 0, sm: 1 },
+                          backgroundColor: "#333333",
+                        }}
+                      >
+                        <ModeEditOutlineOutlinedIcon
+                          sx={{ color: "#ffc139" }}
+                        />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
+          {openModal && (
+            <ModalEditUser
+              open={openModal}
+              user={selectedUser}
+              handleClose={() => setOpenModal(false)}
+            />
+          )}
         </Container>
       )}
     </>
