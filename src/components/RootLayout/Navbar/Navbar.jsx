@@ -11,14 +11,31 @@ import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaic
 
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import DefaultButton from "../../DefaultButton/DefaultButton";
 import CartDrawer from "../../CartDrawer/CartDrawer";
 import logoRestaurant from "../../../assets/images/logo.png";
 import HamburguerMenu from "./HamburguerMenu";
 import UserMenu from "./UserMenu";
 
-const pages = ["Inicio", "Categorias", "Delivery", "Contacto"];
+const pages = [
+  {
+    name: "Inicio",
+    path: "/",
+  },
+  {
+    name: "Categorias",
+    path: "/categories",
+  },
+  {
+    name: "Envíos",
+    path: "/delivery",
+  },
+  {
+    name: "Contacto",
+    path: "/contact",
+  }
+  ];
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -47,12 +64,12 @@ const Navbar = () => {
             <HamburguerMenu pages={pages} />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
+            {pages.map((page, indexPage) => (
               <Button
-                key={page}
+                key={indexPage}
                 sx={{ my: 2, color: "black", display: "block" }}
               >
-                {page}
+                <Link to={page.path} style={{ textDecoration: "none", color: "#333333" }}>{page.name}</Link>
               </Button>
             ))}
           </Box>

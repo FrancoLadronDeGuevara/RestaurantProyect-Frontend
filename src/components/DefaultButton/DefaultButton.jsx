@@ -1,8 +1,9 @@
 import "./DefaultButton.css"
-const DefaultButton = ({ buttonText }) => {
+const DefaultButton = ({ buttonText, onclick}) => {
   return (
     <button
     className="default-button"
+    onClick={onclick}
     >
       {buttonText}
     </button>
