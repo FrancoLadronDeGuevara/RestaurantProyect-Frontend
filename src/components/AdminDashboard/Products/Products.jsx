@@ -9,6 +9,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
 } from "@mui/material";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
@@ -28,6 +29,8 @@ const Products = () => {
   const [openModal, setOpenModal] = useState("");
   const [isCreatingProduct, setIsCreatingProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.product);
 
@@ -47,6 +50,15 @@ const Products = () => {
         product.image
       )
     );
+
+    const handleChangePage = (e, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (e) => {
+      setRowsPerPage(+e.target.value);
+      setPage(0);
+    };
 
   return (
     <>
@@ -94,7 +106,7 @@ const Products = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row, rowIndex) => (
+                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
                   <TableRow
                     key={rowIndex}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -142,6 +154,16 @@ const Products = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          <TablePagination
+            labelRowsPerPage="Filas"
+            rowsPerPageOptions={[5, 10, 20]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
           {openModal && (
             <ModalProduct
               openModal={openModal}
