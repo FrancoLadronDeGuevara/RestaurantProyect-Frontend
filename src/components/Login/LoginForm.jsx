@@ -43,7 +43,6 @@ const LoginForm = () => {
     if (!email || !password || emailError)
       return alert("Por favor, rellena el formulario correctamente");
 
-
     dispatch(loginUser({ email, password })).unwrap()
     .then(() => {
       autoCloseAlert("BIENVENIDO", "success");

@@ -18,13 +18,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { getAllProducts } from "../../../redux/actions/productActions";
 import Loader from "../../Loader/Loader";
+import ModalProduct from "./ModalProduct";
 
 function createData(_id, name, description, price, category, image) {
   return { _id, name, description, price, category, image };
 }
 
 const Products = () => {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setOpenModal] = useState("");
+  const [isCreatingProduct, setIsCreatingProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.product);
@@ -32,8 +34,6 @@ const Products = () => {
   useEffect(() => {
     dispatch(getAllProducts());
   }, []);
-
-  console.log(products);
 
   const rows =
     products &&
@@ -56,6 +56,10 @@ const Products = () => {
         <Container>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
+              onClick={() => {
+                setIsCreatingProduct(true);
+                setOpenModal(true);
+              }}
               variant="contained"
               sx={{
                 backgroundColor: "#ffc139",
@@ -64,7 +68,7 @@ const Products = () => {
               }}
             >
               CREAR PRODUCTO
-              <AddBoxOutlinedIcon sx={{ml: 1}}/>
+              <AddBoxOutlinedIcon sx={{ ml: 1 }} />
             </Button>
           </Box>
           <TableContainer component={Paper} sx={{ overflowX: "auto", my: 2 }}>
@@ -72,7 +76,7 @@ const Products = () => {
               <TableHead sx={{ backgroundColor: "#333333" }}>
                 <TableRow>
                   <TableCell sx={{ color: "#ffc139" }}>Nombre</TableCell>
-                  <TableCell align="left" sx={{ color: "#ffc139" }}>
+                  <TableCell align="center" sx={{ color: "#ffc139" }}>
                     Descripción
                   </TableCell>
                   <TableCell align="left" sx={{ color: "#ffc139" }}>
@@ -98,7 +102,7 @@ const Products = () => {
                     <TableCell component="th" scope="row">
                       {row.name}
                     </TableCell>
-                    <TableCell align="left">{row.description}</TableCell>
+                    <TableCell align="left" sx={{minWidth: 210}}>{row.description}</TableCell>
                     <TableCell align="left">
                       <Chip label={`$ ${row.price}`} color="success" />
                     </TableCell>
@@ -118,6 +122,7 @@ const Products = () => {
                       <Button
                         onClick={() => {
                           setSelectedProduct(row);
+                          setIsCreatingProduct(false);
                           setOpenModal(true);
                         }}
                         variant="contained"
@@ -137,13 +142,14 @@ const Products = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          {/* {openModal && (
-            <ModalEditProduct
-              open={openModal}
-              user={selectedProduct}
-              handleClose={() => setOpenModal(false)}
+          {openModal && (
+            <ModalProduct
+              openModal={openModal}
+              closeModal={() => setOpenModal(false)}
+              isCreatingProduct={isCreatingProduct}
+              selectedProduct={selectedProduct}
             />
-          )} */}
+          )}
         </Container>
       )}
     </>
