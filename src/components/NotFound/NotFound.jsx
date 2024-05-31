@@ -55,11 +55,11 @@ const NotFound = () => {
       >
         <Typography
           variant="h2"
-          sx={{ color: "white", fontWeight: "bold !important", my: 2, fontSize: "clamp(2rem, 8dvw, 5rem)" }}
+          sx={{ color: "white", fontWeight: "bold !important", my: 2, fontSize: "clamp(3rem, 8dvw, 5rem)" }}
         >
           404
         </Typography>
-        <Typography sx={{ color: "white", my: 2, fontSize: "clamp(1rem, 3dvw, 1.5rem)" }}>
+        <Typography sx={{ color: "white", my: 2, fontSize: "clamp(1rem, 2.5dvw, 1.5rem)" }}>
           Error... No se encontró lo que estabas buscando
         </Typography>
         <DefaultButton

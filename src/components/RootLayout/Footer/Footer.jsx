@@ -17,6 +17,7 @@ const Footer = () => {
         maxWidth="xl"
         sx={{
           pt: 4,
+          mx: "auto",
         }}
       >
         <Grid item xs={12} sm={4} sx={{ mt: { xs: 2, sm: 0 } }}>
