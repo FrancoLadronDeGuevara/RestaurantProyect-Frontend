@@ -14,12 +14,15 @@ import { getUser } from "./redux/actions/userActions.js";
 import Users from "./components/AdminDashboard/Users/Users.jsx";
 import Products from "./components/AdminDashboard/Products/Products.jsx";
 import Orders from "./components/AdminDashboard/Orders/Orders.jsx";
+import CategoriesPage from "./pages/CategoriesPage.jsx";
+import { getAllProducts } from "./redux/actions/productActions.js";
 
 const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getUser());
+    dispatch(getAllProducts())
   }, []);
 
   return (
@@ -35,6 +38,7 @@ const App = () => {
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
           </Route>
+          <Route path="/categories" element={<CategoriesPage />} />
         </Routes>
       </RootLayout>
     </BrowserRouter>

@@ -8,6 +8,8 @@
   letter-spacing: .2rem;
   font-weight: bolder !important;
   transition: all ease-in-out .3s;
+  display: flex;
+  align-items: center;
 }
 
 .default-button:hover {

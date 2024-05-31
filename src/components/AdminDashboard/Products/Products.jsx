@@ -15,9 +15,8 @@ import {
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { getAllProducts } from "../../../redux/actions/productActions";
+import { useSelector } from "react-redux";
+import { useState } from "react";
 import Loader from "../../Loader/Loader";
 import ModalProduct from "./ModalProduct";
 
@@ -31,12 +30,7 @@ const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const dispatch = useDispatch();
   const { products, loading } = useSelector((state) => state.product);
-
-  useEffect(() => {
-    dispatch(getAllProducts());
-  }, []);
 
   const rows =
     products &&
@@ -51,14 +45,14 @@ const Products = () => {
       )
     );
 
-    const handleChangePage = (e, newPage) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (e) => {
-      setRowsPerPage(+e.target.value);
-      setPage(0);
-    };
+  const handleChangePage = (e, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(+e.target.value);
+    setPage(0);
+  };
 
   return (
     <>
@@ -106,51 +100,55 @@ const Products = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, rowIndex) => (
-                  <TableRow
-                    key={rowIndex}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="left" sx={{minWidth: 210}}>{row.description}</TableCell>
-                    <TableCell align="left">
-                      <Chip label={`$ ${row.price}`} color="success" />
-                    </TableCell>
-                    <TableCell align="center">{row.category}</TableCell>
-                    <TableCell align="center">
-                      <img
-                        src={row.image}
-                        alt={row.name}
-                        style={{
-                          width: "100px",
-                          height: "100px",
-                          objectFit: "cover",
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        onClick={() => {
-                          setSelectedProduct(row);
-                          setIsCreatingProduct(false);
-                          setOpenModal(true);
-                        }}
-                        variant="contained"
-                        size="small"
-                        sx={{
-                          mr: { xs: 0, sm: 1 },
-                          backgroundColor: "#333333",
-                        }}
-                      >
-                        <ModeEditOutlineOutlinedIcon
-                          sx={{ color: "#ffc139" }}
+                {rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, rowIndex) => (
+                    <TableRow
+                      key={rowIndex}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="left" sx={{ minWidth: 210 }}>
+                        {row.description}
+                      </TableCell>
+                      <TableCell align="left">
+                        <Chip label={`$ ${row.price}`} color="success" />
+                      </TableCell>
+                      <TableCell align="center">{row.category}</TableCell>
+                      <TableCell align="center">
+                        <img
+                          src={row.image}
+                          alt={row.name}
+                          style={{
+                            width: "100px",
+                            height: "100px",
+                            objectFit: "cover",
+                          }}
                         />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button
+                          onClick={() => {
+                            setSelectedProduct(row);
+                            setIsCreatingProduct(false);
+                            setOpenModal(true);
+                          }}
+                          variant="contained"
+                          size="small"
+                          sx={{
+                            mr: { xs: 0, sm: 1 },
+                            backgroundColor: "#333333",
+                          }}
+                        >
+                          <ModeEditOutlineOutlinedIcon
+                            sx={{ color: "#ffc139" }}
+                          />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>

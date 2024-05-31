@@ -9,14 +9,15 @@ import {
 } from "@mui/material";
 import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaicOutlined";
 
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import DefaultButton from "../../DefaultButton/DefaultButton";
 import CartDrawer from "../../CartDrawer/CartDrawer";
 import logoRestaurant from "../../../assets/images/logo.png";
 import HamburguerMenu from "./HamburguerMenu";
 import UserMenu from "./UserMenu";
+import { getUserCart } from "../../../redux/actions/userActions";
 
 const pages = [
   {
@@ -34,14 +35,21 @@ const pages = [
   {
     name: "Contacto",
     path: "/contact",
-  }
-  ];
+  },
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user, isAuthenticated, loading } = useSelector((state) => state.user);
 
   const [openCart, setOpenCart] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      dispatch(getUserCart());
+    }
+  }, [isAuthenticated, dispatch]);
 
   return (
     <AppBar
@@ -69,7 +77,12 @@ const Navbar = () => {
                 key={indexPage}
                 sx={{ my: 2, color: "black", display: "block" }}
               >
-                <Link to={page.path} style={{ textDecoration: "none", color: "#333333" }}>{page.name}</Link>
+                <Link
+                  to={page.path}
+                  style={{ textDecoration: "none", color: "#333333" }}
+                >
+                  {page.name}
+                </Link>
               </Button>
             ))}
           </Box>

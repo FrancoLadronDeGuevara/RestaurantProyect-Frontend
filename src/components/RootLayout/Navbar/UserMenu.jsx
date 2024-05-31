@@ -4,7 +4,7 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import { useState } from "react";
 import CartDrawer from "../../CartDrawer/CartDrawer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../../redux/actions/userActions";
 import { useNavigate } from "react-router-dom";
 import { autoCloseAlert, customAlert } from "../../../utils/alerts";
@@ -12,6 +12,7 @@ import { autoCloseAlert, customAlert } from "../../../utils/alerts";
 const UserMenu = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userCart } = useSelector((state) => state.user);
   const [openCart, setOpenCart] = useState(false);
 
   const handleLogoutUser = () => {
@@ -19,10 +20,9 @@ const UserMenu = () => {
       dispatch(logoutUser()).then(() => {
         autoCloseAlert("SESION CERRADA", "success");
         navigate("/");
-      })
+      });
     });
   };
-
 
   return (
     <>
@@ -59,7 +59,7 @@ const UserMenu = () => {
         </Badge>
         <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
         <Badge
-          badgeContent={3}
+          badgeContent={userCart?.length}
           sx={{
             "& .MuiBadge-badge": {
               backgroundColor: "#ffc139",
@@ -104,7 +104,7 @@ const UserMenu = () => {
         </Tooltip>
       </Box>
       {openCart && (
-        <CartDrawer openCart={openCart} closeCart={() => setOpenCart(false)} />
+        <CartDrawer openCart={openCart} closeCart={() => setOpenCart(false)} userCart={userCart}/>
       )}
     </>
   );
