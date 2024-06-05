@@ -2,21 +2,18 @@ import { Container } from "@mui/material";
 import { useSelector } from "react-redux";
 import ProductCard from "../ProductCard/ProductCard";
 
-const Categories = () => {
+const FilterCategories = () => {
   const { products } = useSelector((state) => state.product);
   return (
-    <Container>
+    <Container sx={{display: "flex", flexWrap: "wrap", gap: 3}}>
       {products.map((product) => (
         <ProductCard
           key={product._id}
-          productImage={product.image}
-          productName={product.name}
-          productPrice={product.price}
-          productDescription={product.description}
+          product={product}
         />
       ))}
     </Container>
   );
 };
 
-export default Categories;
+export default FilterCategories;
