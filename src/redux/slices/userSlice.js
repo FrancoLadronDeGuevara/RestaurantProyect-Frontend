@@ -1,13 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { deleteUser, editUser, getAllUsers, getUser, getUserCart, loginUser, logoutUser } from "../actions/userActions";
+import { deleteUser, editUser, getAllUsers, getUser, loginUser, logoutUser } from "../actions/userActions";
 
 const userSlice = createSlice({
     name: 'users',
     initialState: {
         isAuthenticated: false,
         loading: true,
-        users: [],
-
+        users: []
     },
 
     reducers: {
@@ -92,19 +91,6 @@ const userSlice = createSlice({
             state.users = state.users.filter((user) => user._id !== action.payload._id);
         })
         .addCase(deleteUser.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.error.message;
-        })
-
-        .addCase(getUserCart.pending, (state) => {
-            state.loading = true;
-        })
-        .addCase(getUserCart.fulfilled, (state, action) => {
-            state.loading = false;
-            state.error = null;
-            state.userCart = action.payload
-        })
-        .addCase(getUserCart.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         })

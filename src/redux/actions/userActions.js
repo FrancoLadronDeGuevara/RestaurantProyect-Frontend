@@ -31,7 +31,4 @@ export const deleteUser = createAsyncThunk("deleteUser", async (id) => {
     return response.data;
 });
 
-export const getUserCart = createAsyncThunk("getUserCart", async () => {
-    const response = await clientAxios.get(`/users/user-cart`);
-    return response.data;
-});
+
