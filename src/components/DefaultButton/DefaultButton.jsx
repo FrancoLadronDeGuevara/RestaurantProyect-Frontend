@@ -1,8 +1,8 @@
 import "./DefaultButton.css"
-const DefaultButton = ({ buttonText, onclick, styles, icon = null}) => {
+const DefaultButton = ({ buttonText, onclick, styles, icon = null, className = "default-button"}) => {
   return (
     <button
-    className="default-button"
+    className={className}
     style={styles}
     onClick={onclick}
     >
