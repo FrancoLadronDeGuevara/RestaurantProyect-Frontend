@@ -1,19 +1,50 @@
 import { Box, Divider, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import ClearIcon from "@mui/icons-material/Clear";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  manageCartProduct,
+  updateProductInCart,
+} from "../../redux/actions/cartActions";
+import { autoCloseAlert, customAlert } from "../../utils/alerts";
+import Loader from "../Loader/Loader";
 
 const ProductItem = ({ product, closeCart }) => {
-  const handleIncreaseProduct = () => {};
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.cart);
 
-  const handleDecreaseProduct = () => {};
+  const handleRemoveProduct = () => {
+    customAlert("¿Deseas remover este producto del carrito?", () => {
+      dispatch(manageCartProduct({ id: product.product._id }));
+    });
+  };
+
+  const handleIncreaseProduct = () => {
+    if (product.quantity >= 20)
+      return autoCloseAlert("No puedes tener mas de 20 unidades", "error");
+
+    dispatch(
+      updateProductInCart({ id: product.product._id, action: "increment" })
+    );
+  };
+
+  const handleDecreaseProduct = () => {
+    if (product.quantity <= 1)
+      return autoCloseAlert("No puedes tener 0 unidades", "error");
+    dispatch(
+      updateProductInCart({ id: product.product._id, action: "decrement" })
+    );
+  };
 
   return (
     <>
+      {loading && <Loader />}
       <Box
         sx={{
           width: 250,
-          height: 100,
+          height: 110,
           display: "flex",
           alignItems: "center",
           px: 0.5,
@@ -25,7 +56,7 @@ const ProductItem = ({ product, closeCart }) => {
           src={product.product.image}
           sx={{ width: 80, height: 80 }}
         />
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, position: "relative" }}>
           <Link
             style={{ textDecoration: "none" }}
             to={`/product/${product.product._id}`}
@@ -37,6 +68,17 @@ const ProductItem = ({ product, closeCart }) => {
               {product.product.name}
             </Typography>
           </Link>
+          <ClearIcon
+            onClick={handleRemoveProduct}
+            sx={{
+              position: "absolute",
+              top: -12,
+              right: 8,
+              fontSize: 16,
+              color: "red",
+              cursor: "pointer",
+            }}
+          />
           <Box
             sx={{
               display: "flex",
@@ -75,7 +117,7 @@ const ProductItem = ({ product, closeCart }) => {
               mr: 1,
             }}
           >
-            <Typography variant="body2" sx={{ color: "#333333" }}>
+            <Typography variant="body2" sx={{ color: "gray" }}>
               Subtotal:
             </Typography>
             <Typography

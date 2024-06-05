@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { manageCartProduct } from "../../redux/actions/cartActions";
 import { useEffect, useState } from "react";
+import { customAlert } from "../../utils/alerts";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
@@ -14,15 +15,23 @@ const ProductCard = ({ product }) => {
   const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
-    const isProductInCart = userCart.some((item) => item.product._id === product._id);
+    const isProductInCart = userCart.some(
+      (item) => item.product._id === product._id
+    );
     setIsInCart(isProductInCart);
   }, [userCart, product]);
 
-  const handleAddToCart =  async () => {
+  const handleAddToCart = async () => {
     if (!isAuthenticated) {
       navigate("/login");
     } else {
-       dispatch(manageCartProduct({ id: product._id }));
+      if (isInCart) {
+        customAlert("¿Deseas remover este producto del carrito?", () => {
+          dispatch(manageCartProduct({ id: product._id }));
+        });
+      } else {
+        dispatch(manageCartProduct({ id: product._id }));
+      }
     }
   };
 
@@ -60,11 +69,15 @@ const ProductCard = ({ product }) => {
         </Typography>
       </Box>
       <DefaultButton
-        buttonText={isInCart ? 'Remover del carrito' : 'Agregar al carrito'}
+        buttonText={isInCart ? "Remover del carrito" : "Agregar al carrito"}
         onclick={handleAddToCart}
-        className={isInCart ? 'default-button-reverse' : 'default-button'}
+        className={isInCart ? "default-button-reverse" : "default-button"}
         styles={{ width: 200, alignSelf: "center" }}
-        icon={isInCart ? null : <ShoppingCartOutlinedIcon sx={{ fontSize: 16, mr: 1 }} />}
+        icon={
+          isInCart ? null : (
+            <ShoppingCartOutlinedIcon sx={{ fontSize: 16, mr: 1 }} />
+          )
+        }
       />
     </Box>
   );

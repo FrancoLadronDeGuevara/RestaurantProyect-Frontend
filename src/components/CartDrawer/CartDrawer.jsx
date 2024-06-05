@@ -24,33 +24,47 @@ const CartDrawer = ({ openCart, closeCart }) => {
             </Typography>
           ) : (
             userCart?.map((product, productIndex) => (
-              <ProductItem key={productIndex} product={product} closeCart={closeCart}/>
+              <ProductItem
+                key={productIndex}
+                product={product}
+                closeCart={closeCart}
+              />
             ))
           )}
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <DefaultButton
-            buttonText="Confirmar compra"
-            onclick={() => {
-              closeCart();
-              navigate("/checkout");
-            }}
-            icon={<ShoppingCartCheckoutIcon sx={{ mr: 1, fontSize: 18 }} />}
-            styles={{ margin: "5px 0" }}
-          />
-          <DefaultButton
-            buttonText="Seguir comprando"
-            onclick={closeCart}
-            className="default-button-reverse"
-            icon={<VisibilityIcon sx={{ mr: 1, fontSize: 18 }} />}
-          />
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{ textAlign: "right", fontStyle: "italic", mt: 1, mr: 2 }}
+          >
+            Total: $ {userCart?.reduce((acc, product) => acc + product.product.price * product.quantity, 0)}
+          </Typography>
         </Box>
+        {userCart.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <DefaultButton
+              buttonText="Confirmar compra"
+              onclick={() => {
+                closeCart();
+                navigate("/checkout");
+              }}
+              icon={<ShoppingCartCheckoutIcon sx={{ mr: 1, fontSize: 18 }} />}
+              styles={{ margin: "5px 0" }}
+            />
+            <DefaultButton
+              buttonText="Seguir comprando"
+              onclick={closeCart}
+              className="default-button-reverse"
+              icon={<VisibilityIcon sx={{ mr: 1, fontSize: 18 }} />}
+            />
+          </Box>
+        )}
       </Drawer>
     </>
   );
