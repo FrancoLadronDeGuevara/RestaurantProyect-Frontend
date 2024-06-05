@@ -1,41 +1,70 @@
 import { Box, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import DefaultButton from "../DefaultButton/DefaultButton";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { manageCartProduct } from "../../redux/actions/cartActions";
+import { useEffect, useState } from "react";
 
-const ProductCard = ({productImage, productName, productPrice, productDescription}) => {
+const ProductCard = ({ product }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useSelector((state) => state.user);
+  const { userCart } = useSelector((state) => state.cart);
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    const isProductInCart = userCart.some((item) => item.product._id === product._id);
+    setIsInCart(isProductInCart);
+  }, [userCart, product]);
+
+  const handleAddToCart =  async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else {
+       dispatch(manageCartProduct({ id: product._id }));
+    }
+  };
+
   return (
     <Box
       sx={{
         width: 300,
-        height: 450,
         border: "thin solid gray",
+        borderRadius: 2,
         display: "flex",
         flexDirection: "column",
         p: 1,
       }}
     >
-      <Box component="img" src={productImage} sx={{ width: 200, mx: "auto" }} />
-      <Box sx={{ p: 2 }}>
+      <Box
+        component="img"
+        src={product.image}
+        sx={{ width: 200, mx: "auto" }}
+      />
+      <Box sx={{ p: 2, flexGrow: 1 }}>
         <Typography
           variant="h5"
-          sx={{ fontWeight: "400 !important", color: "#333333" }}
+          sx={{ fontWeight: "500 !important", color: "#333333" }}
         >
-          {productName}
+          {product.name}
         </Typography>
         <Typography
           variant="h4"
           sx={{ fontWeight: "bold !important", color: "#ffc139", my: 1 }}
         >
-          {productPrice}
+          $ {product.price}
         </Typography>
         <Typography variant="body1" sx={{ color: "gray" }}>
-          {productDescription}
+          {product.description}
         </Typography>
       </Box>
       <DefaultButton
-        buttonText="Agregar al carrito"
+        buttonText={isInCart ? 'Remover del carrito' : 'Agregar al carrito'}
+        onclick={handleAddToCart}
+        className={isInCart ? 'default-button-reverse' : 'default-button'}
         styles={{ width: 200, alignSelf: "center" }}
-        icon={<ShoppingCartOutlinedIcon sx={{ fontSize: 16, mr: 1 }}/>}
+        icon={isInCart ? null : <ShoppingCartOutlinedIcon sx={{ fontSize: 16, mr: 1 }} />}
       />
     </Box>
   );

@@ -8,22 +8,30 @@ import NotFound from "./pages/NotFound.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getUser } from "./redux/actions/userActions.js";
 import Users from "./components/AdminDashboard/Users/Users.jsx";
 import Products from "./components/AdminDashboard/Products/Products.jsx";
 import Orders from "./components/AdminDashboard/Orders/Orders.jsx";
-import CategoriesPage from "./pages/CategoriesPage.jsx";
 import { getAllProducts } from "./redux/actions/productActions.js";
+import FilterCategoriesPage from "./pages/FilterCategoriesPage.jsx";
+import { getUserCart } from "./redux/actions/cartActions.js";
 
 const App = () => {
   const dispatch = useDispatch();
+  const {isAuthenticated, loading} = useSelector(state => state.user)
+
 
   useEffect(() => {
     dispatch(getUser());
-    dispatch(getAllProducts())
-  }, []);
+    dispatch(getAllProducts());
+    if(isAuthenticated && !loading){
+      dispatch(getUserCart());
+    }
+  }, [isAuthenticated, dispatch]);
+
+  
 
   return (
     <BrowserRouter>
@@ -38,7 +46,7 @@ const App = () => {
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
           </Route>
-          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/categories" element={<FilterCategoriesPage />} />
         </Routes>
       </RootLayout>
     </BrowserRouter>

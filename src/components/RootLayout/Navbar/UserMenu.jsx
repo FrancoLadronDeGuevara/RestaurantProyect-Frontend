@@ -12,7 +12,7 @@ import { autoCloseAlert, customAlert } from "../../../utils/alerts";
 const UserMenu = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userCart } = useSelector((state) => state.user);
+  const { userCart } = useSelector((state) => state.cart);
   const [openCart, setOpenCart] = useState(false);
 
   const handleLogoutUser = () => {
@@ -59,7 +59,7 @@ const UserMenu = () => {
         </Badge>
         <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
         <Badge
-          badgeContent={userCart?.length}
+          badgeContent={userCart.length}
           sx={{
             "& .MuiBadge-badge": {
               backgroundColor: "#ffc139",
@@ -104,7 +104,7 @@ const UserMenu = () => {
         </Tooltip>
       </Box>
       {openCart && (
-        <CartDrawer openCart={openCart} closeCart={() => setOpenCart(false)} userCart={userCart}/>
+        <CartDrawer openCart={openCart} closeCart={() => setOpenCart(false)} />
       )}
     </>
   );

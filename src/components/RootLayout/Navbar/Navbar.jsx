@@ -9,15 +9,12 @@ import {
 } from "@mui/material";
 import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaicOutlined";
 
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import DefaultButton from "../../DefaultButton/DefaultButton";
-import CartDrawer from "../../CartDrawer/CartDrawer";
 import logoRestaurant from "../../../assets/images/logo.png";
 import HamburguerMenu from "./HamburguerMenu";
 import UserMenu from "./UserMenu";
-import { getUserCart } from "../../../redux/actions/userActions";
 
 const pages = [
   {
@@ -40,16 +37,7 @@ const pages = [
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { user, isAuthenticated, loading } = useSelector((state) => state.user);
-
-  const [openCart, setOpenCart] = useState(false);
-
-  useEffect(() => {
-    if (isAuthenticated && !loading) {
-      dispatch(getUserCart());
-    }
-  }, [isAuthenticated, dispatch]);
 
   return (
     <AppBar
@@ -106,23 +94,19 @@ const Navbar = () => {
                   <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
                 </Box>
               )}
-              <UserMenu />
+              <UserMenu/>
             </Box>
           )}
 
           {!isAuthenticated && (
             <Box>
-              <NavLink to="/login">
+              <NavLink style={{ textDecoration: "none" }} to="/login">
                 <DefaultButton buttonText="INICIAR SESION" />
               </NavLink>
             </Box>
           )}
         </Toolbar>
       </Container>
-
-      {openCart && (
-        <CartDrawer openCart={openCart} closeCart={() => setOpenCart(false)} />
-      )}
     </AppBar>
   );
 };
