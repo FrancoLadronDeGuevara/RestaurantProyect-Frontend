@@ -13,6 +13,7 @@ const UserMenu = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userCart } = useSelector((state) => state.cart);
+  const { userOrders } = useSelector((state) => state.order);
   const [openCart, setOpenCart] = useState(false);
 
   const handleLogoutUser = () => {
@@ -28,7 +29,7 @@ const UserMenu = () => {
     <>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Badge
-          badgeContent={5}
+          badgeContent={userOrders.length}
           sx={{
             "& .MuiBadge-badge": {
               backgroundColor: "#ffc139",
@@ -45,7 +46,7 @@ const UserMenu = () => {
         >
           <Tooltip title="Pedidos">
             <ShoppingBagOutlinedIcon
-              onClick={() => navigate("/orders")}
+              onClick={() => navigate("/user-orders")}
               sx={{
                 color: "#333333",
                 cursor: "pointer",

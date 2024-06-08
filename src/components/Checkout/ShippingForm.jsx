@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MarkunreadMailboxOutlinedIcon from "@mui/icons-material/MarkunreadMailboxOutlined";
 import LocationCityOutlinedIcon from "@mui/icons-material/LocationCityOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -23,21 +23,24 @@ import DefaultButton from "../DefaultButton/DefaultButton";
 import { useState } from "react";
 import { handleError } from "../../utils/handleInputError";
 import { autoCloseAlert } from "../../utils/alerts";
+import { createOrder } from "../../redux/actions/orderActions";
 
-const regexAddress = /^(?=.*[a-zA-Z#-])(?!(.*\s{2,}))[a-zA-Z0-9\s#-]{5,}$/
-const regexPostalCode = /^[0-9]{4}$/;
+const regexAddress = /^(?=.*[a-zA-Z#-])(?!(.*\s{2,}))[a-zA-Z0-9\s#-]{5,}$/;
+const regexZipCode = /^[0-9]{4}$/;
 const regexCardNumber = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
 const regexExpirationDate = /^(0[1-9]|1[0-2])\/(2[4-9])$/;
 const regexCvc = /^[0-9]{3}$/;
 
-const ShippingForm = () => {
+const ShippingForm = ({ total }) => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+  const { userCart } = useSelector((state) => state.cart);
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState(false);
   const [city, setCity] = useState("");
   const [cityError, setCityError] = useState(false);
-  const [postalCode, setPostalCode] = useState("");
-  const [postalCodeError, setPostalCodeError] = useState(false);
+  const [zipCode, setZipCode] = useState("");
+  const [zipCodeError, setZipCodeError] = useState(false);
   const [cardNumber, setCardNumber] = useState("");
   const [cardNumberError, setCardNumberError] = useState(false);
   const [expirationDate, setExpirationDate] = useState("");
@@ -49,7 +52,7 @@ const ShippingForm = () => {
     if (
       !address ||
       !city ||
-      !postalCode ||
+      !zipCode ||
       !cardNumber ||
       !expirationDate ||
       !cvc
@@ -59,6 +62,15 @@ const ShippingForm = () => {
         "error"
       );
     }
+
+    const order = {
+      userAddress: { address, city, zipCode },
+      creditCard: { cardNumber, expirationDate, cvc },
+      total,
+      products: userCart,
+    };
+
+    dispatch(createOrder(order));
   };
 
   return (
@@ -170,7 +182,7 @@ const ShippingForm = () => {
         label="CP*"
         variant="outlined"
         onChange={(e) =>
-          handleError(e, setPostalCode, setPostalCodeError, regexPostalCode)
+          handleError(e, setZipCode, setZipCodeError, regexZipCode)
         }
         InputProps={{
           endAdornment: (
@@ -180,10 +192,10 @@ const ShippingForm = () => {
           ),
           inputProps: { maxLength: 4 },
         }}
-        value={postalCode}
-        error={postalCodeError}
-        color={postalCodeError ? "" : "success"}
-        helperText={postalCodeError ? "Código postal inválido" : ""}
+        value={zipCode}
+        error={zipCodeError}
+        color={zipCodeError ? "" : "success"}
+        helperText={zipCodeError ? "Código postal inválido" : ""}
       />
 
       <Typography

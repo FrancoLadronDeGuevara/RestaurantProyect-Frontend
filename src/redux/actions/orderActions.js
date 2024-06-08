@@ -6,6 +6,11 @@ export const getOrders = createAsyncThunk("getOrders", async () => {
     return response.data;
 });
 
+export const getUserOrders = createAsyncThunk("getUserOrders", async () => {
+    const response = await clientAxios.get(`/orders/user-orders`);
+    return response.data;
+});
+
 export const createOrder = createAsyncThunk("createOrder", async (data) => {
     const response = await clientAxios.post(`/orders/create`, data);
     return response.data;

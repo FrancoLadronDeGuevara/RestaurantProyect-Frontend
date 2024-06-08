@@ -12,10 +12,12 @@ const Checkout = () => {
     if (userCart.length == 0) navigate("/categories");
   }, [userCart]);
 
+  const total = userCart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+
   return (
     <Grid container maxWidth="xl" sx={{ mx: "auto" }}>
       <PurchaseSummary userCart={userCart} />
-      <ShippingForm />
+      <ShippingForm total={total} />
     </Grid>
   );
 };
