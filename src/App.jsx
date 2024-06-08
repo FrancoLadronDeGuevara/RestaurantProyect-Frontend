@@ -13,12 +13,14 @@ import Products from "./components/AdminDashboard/Products/Products.jsx";
 import Orders from "./components/AdminDashboard/Orders/Orders.jsx";
 import FilterCategoriesPage from "./pages/FilterCategoriesPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
+import UserOrdersPage from "./pages/UserOrdersPage.jsx";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getAllProducts } from "./redux/actions/productActions.js";
 import { getUser } from "./redux/actions/userActions.js";
 import { getUserCart } from "./redux/actions/cartActions.js";
+import { getUserOrders } from "./redux/actions/orderActions.js";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -29,6 +31,7 @@ const App = () => {
     dispatch(getAllProducts());
     if (isAuthenticated && !loading) {
       dispatch(getUserCart());
+      dispatch(getUserOrders())
     }
   }, [isAuthenticated, dispatch]);
 
@@ -47,6 +50,7 @@ const App = () => {
           </Route>
           <Route path="/categories" element={<FilterCategoriesPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/user-orders" element={<UserOrdersPage />} />
         </Routes>
       </RootLayout>
     </BrowserRouter>
