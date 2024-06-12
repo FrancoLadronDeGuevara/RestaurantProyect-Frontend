@@ -24,6 +24,8 @@ import { useState } from "react";
 import { handleError } from "../../utils/handleInputError";
 import { autoCloseAlert } from "../../utils/alerts";
 import { createOrder } from "../../redux/actions/orderActions";
+import { clearUserCart } from "../../redux/actions/cartActions";
+import Loader from "../Loader/Loader";
 
 const regexAddress = /^(?=.*[a-zA-Z#-])(?!(.*\s{2,}))[a-zA-Z0-9\s#-]{5,}$/;
 const regexZipCode = /^[0-9]{4}$/;
@@ -35,6 +37,7 @@ const ShippingForm = ({ total }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
   const { userCart } = useSelector((state) => state.cart);
+  const { loading } = useSelector((state) => state.order);
   const [address, setAddress] = useState("");
   const [addressError, setAddressError] = useState(false);
   const [city, setCity] = useState("");
@@ -70,239 +73,252 @@ const ShippingForm = ({ total }) => {
       products: userCart,
     };
 
-    dispatch(createOrder(order));
+    dispatch(createOrder(order))
+      .unwrap()
+      .then(() => {
+        autoCloseAlert("¡Gracias por tu compra!", "success");
+        dispatch(clearUserCart());
+      })
+      .catch((err) => {
+        autoCloseAlert(err.message, "error");
+      });
   };
 
   return (
-    <Grid
-      item
-      xs={12}
-      sm={6}
-      sx={{
-        p: 2,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <Typography
-        variant="h4"
+    <>
+      {loading && <Loader />}
+      <Grid
+        item
+        xs={12}
+        sm={6}
         sx={{
-          mb: 2,
-          fontWeight: "bolder !important",
-          color: "#333333",
-        }}
-      >
-        Información de envío
-      </Typography>
-      <FormControl fullWidth sx={{ m: 1 }} variant="filled" size="small">
-        <InputLabel htmlFor="userName">Nombre cliente</InputLabel>
-        <FilledInput
-          id="userName"
-          disabled
-          value={user?.firstname + " " + user?.lastname}
-          endAdornment={
-            <InputAdornment position="end">
-              <PersonOutlineOutlinedIcon />
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-
-      <FormControl fullWidth sx={{ m: 1 }} variant="filled" size="small">
-        <InputLabel htmlFor="userEmail">Email cliente</InputLabel>
-        <FilledInput
-          id="userEmail"
-          disabled
-          value={user?.email}
-          endAdornment={
-            <InputAdornment position="end">
-              <EmailOutlinedIcon />
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-
-      <Typography
-        variant="h5"
-        sx={{
-          mt: 2,
-          mb: 1,
-          color: "#333333",
-          fontWeight: "bolder !important",
-          alignSelf: "start",
-        }}
-      >
-        Dirección :
-      </Typography>
-      <TextField
-        size="small"
-        fullWidth
-        label="Calle/Piso/Dpto*"
-        variant="outlined"
-        onChange={(e) =>
-          handleError(e, setAddress, setAddressError, regexAddress)
-        }
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <HomeOutlinedIcon />
-            </InputAdornment>
-          ),
-          inputProps: { maxLength: 40 },
-        }}
-        value={address}
-        error={addressError}
-        color={addressError ? "" : "success"}
-        helperText={addressError ? "Dirección inválida" : ""}
-      />
-      <TextField
-        size="small"
-        fullWidth
-        label="Ciudad*"
-        variant="outlined"
-        onChange={(e) => handleError(e, setCity, setCityError, regexAddress)}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <LocationCityOutlinedIcon />
-            </InputAdornment>
-          ),
-          inputProps: { maxLength: 40 },
-        }}
-        sx={{ my: 3 }}
-        value={city}
-        error={cityError}
-        color={cityError ? "" : "success"}
-        helperText={cityError ? "Nombre de ciudad inválida" : ""}
-      />
-      <TextField
-        size="small"
-        fullWidth
-        label="CP*"
-        variant="outlined"
-        onChange={(e) =>
-          handleError(e, setZipCode, setZipCodeError, regexZipCode)
-        }
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              <MarkunreadMailboxOutlinedIcon />
-            </InputAdornment>
-          ),
-          inputProps: { maxLength: 4 },
-        }}
-        value={zipCode}
-        error={zipCodeError}
-        color={zipCodeError ? "" : "success"}
-        helperText={zipCodeError ? "Código postal inválido" : ""}
-      />
-
-      <Typography
-        variant="h5"
-        sx={{
-          mt: 2,
-          mb: 1,
-          color: "#333333",
-          fontWeight: "bolder !important",
-          alignSelf: "start",
-        }}
-      >
-        Datos de tarjeta :
-      </Typography>
-
-      <FormControl fullWidth sx={{ m: 1 }} variant="filled" size="small">
-        <InputLabel
-          htmlFor="cardNumber"
-          color={cardNumberError ? "error" : "success"}
-        >
-          {cardNumberError ? "Número de tarjeta inválido" : "Número de tarjeta"}
-        </InputLabel>
-        <FilledInput
-          id="cardNumber"
-          type="text"
-          placeholder="XXXX XXXX XXXX XXXX"
-          value={cardNumber}
-          inputProps={{ maxLength: 16 }}
-          color={cardNumberError ? "error" : "success"}
-          onChange={(e) =>
-            handleError(e, setCardNumber, setCardNumberError, regexCardNumber)
-          }
-          endAdornment={
-            <InputAdornment position="end">
-              <CreditCardOutlinedIcon />
-            </InputAdornment>
-          }
-        />
-      </FormControl>
-      <Box
-        sx={{
+          p: 2,
           display: "flex",
-          flexWrap: "wrap",
-          width: "100%",
-          justifyContent: "space-between",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <FormControl sx={{ width: "45%" }} variant="filled" size="small">
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 2,
+            fontWeight: "bolder !important",
+            color: "#333333",
+          }}
+        >
+          Información de envío
+        </Typography>
+        <FormControl fullWidth sx={{ m: 1 }} variant="filled" size="small">
+          <InputLabel htmlFor="userName">Nombre cliente</InputLabel>
+          <FilledInput
+            id="userName"
+            disabled
+            value={user?.firstname + " " + user?.lastname}
+            endAdornment={
+              <InputAdornment position="end">
+                <PersonOutlineOutlinedIcon />
+              </InputAdornment>
+            }
+          />
+        </FormControl>
+
+        <FormControl fullWidth sx={{ m: 1 }} variant="filled" size="small">
+          <InputLabel htmlFor="userEmail">Email cliente</InputLabel>
+          <FilledInput
+            id="userEmail"
+            disabled
+            value={user?.email}
+            endAdornment={
+              <InputAdornment position="end">
+                <EmailOutlinedIcon />
+              </InputAdornment>
+            }
+          />
+        </FormControl>
+
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 2,
+            mb: 1,
+            color: "#333333",
+            fontWeight: "bolder !important",
+            alignSelf: "start",
+          }}
+        >
+          Dirección :
+        </Typography>
+        <TextField
+          size="small"
+          fullWidth
+          label="Calle/Piso/Dpto*"
+          variant="outlined"
+          onChange={(e) =>
+            handleError(e, setAddress, setAddressError, regexAddress)
+          }
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <HomeOutlinedIcon />
+              </InputAdornment>
+            ),
+            inputProps: { maxLength: 40 },
+          }}
+          value={address}
+          error={addressError}
+          color={addressError ? "" : "success"}
+          helperText={addressError ? "Dirección inválida" : ""}
+        />
+        <TextField
+          size="small"
+          fullWidth
+          label="Ciudad*"
+          variant="outlined"
+          onChange={(e) => handleError(e, setCity, setCityError, regexAddress)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <LocationCityOutlinedIcon />
+              </InputAdornment>
+            ),
+            inputProps: { maxLength: 40 },
+          }}
+          sx={{ my: 3 }}
+          value={city}
+          error={cityError}
+          color={cityError ? "" : "success"}
+          helperText={cityError ? "Nombre de ciudad inválida" : ""}
+        />
+        <TextField
+          size="small"
+          fullWidth
+          label="CP*"
+          variant="outlined"
+          onChange={(e) =>
+            handleError(e, setZipCode, setZipCodeError, regexZipCode)
+          }
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <MarkunreadMailboxOutlinedIcon />
+              </InputAdornment>
+            ),
+            inputProps: { maxLength: 4 },
+          }}
+          value={zipCode}
+          error={zipCodeError}
+          color={zipCodeError ? "" : "success"}
+          helperText={zipCodeError ? "Código postal inválido" : ""}
+        />
+
+        <Typography
+          variant="h5"
+          sx={{
+            mt: 2,
+            mb: 1,
+            color: "#333333",
+            fontWeight: "bolder !important",
+            alignSelf: "start",
+          }}
+        >
+          Datos de tarjeta :
+        </Typography>
+
+        <FormControl fullWidth sx={{ m: 1 }} variant="filled" size="small">
           <InputLabel
-            htmlFor="expirationDate"
-            color={expirationDateError ? "error" : "success"}
+            htmlFor="cardNumber"
+            color={cardNumberError ? "error" : "success"}
           >
-            {expirationDateError
-              ? "Fecha de expiración inválida"
-              : "Fecha de expiración"}
+            {cardNumberError
+              ? "Número de tarjeta inválido"
+              : "Número de tarjeta"}
           </InputLabel>
           <FilledInput
-            id="expirationDate"
+            id="cardNumber"
             type="text"
-            placeholder="MM/AA"
-            value={expirationDate}
-            color={expirationDateError ? "error" : "success"}
+            placeholder="XXXX XXXX XXXX XXXX"
+            value={cardNumber}
+            inputProps={{ maxLength: 16 }}
+            color={cardNumberError ? "error" : "success"}
             onChange={(e) =>
-              handleError(
-                e,
-                setExpirationDate,
-                setExpirationDateError,
-                regexExpirationDate
-              )
+              handleError(e, setCardNumber, setCardNumberError, regexCardNumber)
             }
-            inputProps={{ maxLength: 5 }}
             endAdornment={
               <InputAdornment position="end">
-                <CalendarMonthOutlinedIcon />
+                <CreditCardOutlinedIcon />
               </InputAdornment>
             }
           />
         </FormControl>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <FormControl sx={{ width: "45%" }} variant="filled" size="small">
+            <InputLabel
+              htmlFor="expirationDate"
+              color={expirationDateError ? "error" : "success"}
+            >
+              {expirationDateError
+                ? "Fecha de expiración inválida"
+                : "Fecha de expiración"}
+            </InputLabel>
+            <FilledInput
+              id="expirationDate"
+              type="text"
+              placeholder="MM/AA"
+              value={expirationDate}
+              color={expirationDateError ? "error" : "success"}
+              onChange={(e) =>
+                handleError(
+                  e,
+                  setExpirationDate,
+                  setExpirationDateError,
+                  regexExpirationDate
+                )
+              }
+              inputProps={{ maxLength: 5 }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <CalendarMonthOutlinedIcon />
+                </InputAdornment>
+              }
+            />
+          </FormControl>
 
-        <FormControl sx={{ width: "45%" }} variant="filled" size="small">
-          <InputLabel htmlFor="cvc" color={cvcError ? "error" : "success"}>
-            {cvcError ? "CVC inválido" : "CVC"}
-          </InputLabel>
-          <FilledInput
-            type="password"
-            id="cvc"
-            placeholder="XXX"
-            value={cvc}
-            color={cvcError ? "error" : "success"}
-            onChange={(e) => handleError(e, setCvc, setCvcError, regexCvc)}
-            inputProps={{ maxLength: 3 }}
-            endAdornment={
-              <InputAdornment position="end">
-                <PasswordOutlinedIcon />
-              </InputAdornment>
-            }
-          />
-        </FormControl>
-      </Box>
+          <FormControl sx={{ width: "45%" }} variant="filled" size="small">
+            <InputLabel htmlFor="cvc" color={cvcError ? "error" : "success"}>
+              {cvcError ? "CVC inválido" : "CVC"}
+            </InputLabel>
+            <FilledInput
+              type="password"
+              id="cvc"
+              placeholder="XXX"
+              value={cvc}
+              color={cvcError ? "error" : "success"}
+              onChange={(e) => handleError(e, setCvc, setCvcError, regexCvc)}
+              inputProps={{ maxLength: 3 }}
+              endAdornment={
+                <InputAdornment position="end">
+                  <PasswordOutlinedIcon />
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+        </Box>
 
-      <DefaultButton
-        buttonText="Confirmar pedido"
-        styles={{ marginTop: 16 }}
-        onclick={handleSubmit}
-        icon={<CreditScoreOutlinedIcon sx={{ mr: 1, fontSize: 18 }} />}
-      />
-    </Grid>
+        <DefaultButton
+          buttonText="Confirmar pedido"
+          styles={{ marginTop: 16 }}
+          onclick={handleSubmit}
+          icon={<CreditScoreOutlinedIcon sx={{ mr: 1, fontSize: 18 }} />}
+        />
+      </Grid>
+    </>
   );
 };
 

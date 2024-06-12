@@ -63,6 +63,7 @@ const NotFound = () => {
           Error... No se encontró lo que estabas buscando
         </Typography>
         <DefaultButton
+        styles={{margin: 'auto'}}
           buttonText="Volver al inicio"
           onclick={() => navigate("/")}
         />

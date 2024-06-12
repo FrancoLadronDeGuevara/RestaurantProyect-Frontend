@@ -5,13 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { manageCartProduct } from "../../redux/actions/cartActions";
 import { useEffect, useState } from "react";
-import { customAlert } from "../../utils/alerts";
+import { autoCloseAlert, customAlert } from "../../utils/alerts";
+import Loader from "../Loader/Loader";
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.user);
-  const { userCart } = useSelector((state) => state.cart);
+  const { userCart, loading } = useSelector((state) => state.cart);
   const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
@@ -27,10 +28,14 @@ const ProductCard = ({ product }) => {
     } else {
       if (isInCart) {
         customAlert("¿Deseas remover este producto del carrito?", () => {
-          dispatch(manageCartProduct({ id: product._id }));
+          dispatch(manageCartProduct({ id: product._id })).then(() => {
+            autoCloseAlert("Se ha removido el producto del carrito", "warning");
+          });
         });
       } else {
-        dispatch(manageCartProduct({ id: product._id }));
+        dispatch(manageCartProduct({ id: product._id })).then(() => {
+          autoCloseAlert("Se ha agregó el producto al carrito", "success");
+        });
       }
     }
   };
@@ -74,7 +79,9 @@ const ProductCard = ({ product }) => {
         className={isInCart ? "default-button-reverse" : "default-button"}
         styles={{ width: 200, alignSelf: "center" }}
         icon={
-          isInCart ? null : (
+          loading ? (
+            <Loader />
+          ) : isInCart ? null : (
             <ShoppingCartOutlinedIcon sx={{ fontSize: 16, mr: 1 }} />
           )
         }

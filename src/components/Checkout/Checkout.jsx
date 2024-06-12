@@ -9,7 +9,7 @@ const Checkout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userCart.length == 0) navigate("/categories");
+    if (userCart.length == 0) navigate("/");
   }, [userCart]);
 
   const total = userCart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);

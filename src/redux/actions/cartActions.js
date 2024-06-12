@@ -15,3 +15,8 @@ export const updateProductInCart = createAsyncThunk("updateProductInCart", async
     const response = await clientAxios.put(`/users/update-product-in-cart`, data);
     return response.data;
 })
+
+export const clearUserCart = createAsyncThunk("clearUserCart", async () => {
+    const response = await clientAxios.get(`/users/clear-cart`);
+    return response.data;
+})
