@@ -20,8 +20,3 @@ export const editOrder = createAsyncThunk("editOrder", async (data) => {
     const response = await clientAxios.put(`/orders/edit/${data.id}`, data);
     return response.data;
 })
-
-export const deleteOrder = createAsyncThunk("deleteOrder", async (id) => {
-    const response = await clientAxios.delete(`/orders/delete/${id}`);
-    return response.data;
-})

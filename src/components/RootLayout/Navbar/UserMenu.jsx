@@ -29,7 +29,7 @@ const UserMenu = () => {
     <>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Badge
-          badgeContent={userOrders.length}
+          badgeContent={userOrders.filter(order => order.status === "PENDIENTE").length}
           sx={{
             "& .MuiBadge-badge": {
               backgroundColor: "#ffc139",
