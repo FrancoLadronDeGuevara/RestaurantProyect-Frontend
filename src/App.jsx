@@ -21,6 +21,7 @@ import { getAllProducts } from "./redux/actions/productActions.js";
 import { getUser } from "./redux/actions/userActions.js";
 import { getUserCart } from "./redux/actions/cartActions.js";
 import { getUserOrders } from "./redux/actions/orderActions.js";
+import ProductDetailsPage from "./pages/ProductDetailsPage.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const App = () => {
           <Route path="/categories" element={<FilterCategoriesPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/user-orders" element={<UserOrdersPage />} />
+          <Route path="/product/:id" element={<ProductDetailsPage />} />
         </Routes>
       </RootLayout>
     </BrowserRouter>

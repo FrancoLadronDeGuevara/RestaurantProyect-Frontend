@@ -20,3 +20,8 @@ export const deleteProduct = createAsyncThunk("deleteProduct", async (id) => {
     const response = await clientAxios.delete(`/products/delete/${id}`);
     return response.data;
 })
+
+export const getProduct = createAsyncThunk("getProduct", async (id) => {
+    const response = await clientAxios.get(`/products/${id}`);
+    return response.data;
+})

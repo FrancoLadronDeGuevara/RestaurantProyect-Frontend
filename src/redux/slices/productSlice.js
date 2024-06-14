@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { createProduct, deleteProduct, editProduct, getAllProducts } from "../actions/productActions";
+import { createProduct, deleteProduct, editProduct, getAllProducts, getProduct } from "../actions/productActions";
 
 const productSlice = createSlice({
     name: 'products',
     initialState: {
         loading: true,
-        products: []
+        products: [],
     },
 
     reducers: {
@@ -62,6 +62,19 @@ const productSlice = createSlice({
             state.products = state.products.filter((product) => product._id !== action.payload._id);
         })
         .addCase(deleteProduct.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        })
+
+        .addCase(getProduct.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(getProduct.fulfilled, (state, action) => {
+            state.loading = false;
+            state.error = null;
+            state.product = action.payload; 
+        })
+        .addCase(getProduct.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message;
         })
