@@ -70,19 +70,20 @@ const RegisterForm = () => {
     setLoading(true);
     e.preventDefault();
 
-    if (password !== confirmPassword) setLoading(false);
-    setConfirmPasswordError(true);
-
+    
     if (
-      firstnameError ||
-      lastnameError ||
-      emailError ||
-      passwordError ||
+      firstnameError || !firstname ||
+      lastnameError || !lastname ||
+      emailError || !email ||
+      passwordError || !password ||
       confirmPasswordError
     ) {
       setLoading(false);
       return autoCloseAlert("Por favor, rellena bien el formulario", "error");
     }
+    
+    if (password !== confirmPassword) setLoading(false);
+    setConfirmPasswordError(true);
 
     try {
       await clientAxios
@@ -160,8 +161,8 @@ const RegisterForm = () => {
                   fullWidth
                   id="nombre"
                   label="Nombre"
+                  autoComplete="name"
                   name="nombre"
-                  autoComplete="nombre"
                   onChange={(e) =>
                     handleError(
                       e,
@@ -183,7 +184,6 @@ const RegisterForm = () => {
                   id="lastname"
                   label="Apellido"
                   name="lastname"
-                  autoComplete="lastname"
                   onChange={(e) =>
                     handleError(e, setLastname, setLastnameError, lastnameRegex)
                   }
@@ -199,8 +199,8 @@ const RegisterForm = () => {
                   fullWidth
                   id="email"
                   label="Email"
-                  name="email"
                   autoComplete="email"
+                  name="email"
                   onChange={(e) =>
                     handleError(e, setEmail, setEmailError, strongEmailRegex)
                   }
@@ -216,6 +216,7 @@ const RegisterForm = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     label="Contraseña*"
+                    autoComplete="current-password"
                     value={password}
                     error={passwordError}
                     color={passwordError ? "" : "success"}
@@ -251,6 +252,7 @@ const RegisterForm = () => {
                   <TextField
                     id="password2"
                     type={showConfirmPassword ? "text" : "password"}
+                    autoComplete="current-password"
                     label="Repetir Contraseña*"
                     value={confirmPassword}
                     error={confirmPasswordError}
