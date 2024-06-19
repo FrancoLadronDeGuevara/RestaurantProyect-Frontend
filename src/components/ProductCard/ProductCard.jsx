@@ -54,7 +54,7 @@ const ProductCard = ({ product }) => {
       <Box
         component="img"
         src={product.image}
-        sx={{ width: 200, mx: "auto" }}
+        sx={{ width: 150, mx: "auto" }}
       />
       <Box sx={{ p: 2, flexGrow: 1 }}>
         <Typography
@@ -69,7 +69,7 @@ const ProductCard = ({ product }) => {
         >
           $ {product.price}
         </Typography>
-        <Typography variant="body1" sx={{ color: "gray" }}>
+        <Typography variant="subtitle2" sx={{ color: "gray" }}>
           {product.description}
         </Typography>
       </Box>
