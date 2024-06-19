@@ -14,8 +14,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { handleError } from "../../utils/handleInputError.js";
 import { useDispatch } from "react-redux";
-import {  getUser, loginUser } from "../../redux/actions/userActions.js";
+import { getUser, loginUser } from "../../redux/actions/userActions.js";
 import { autoCloseAlert } from "../../utils/alerts.js";
+
+import backgroundImage from "../../assets/images/notfound.webp";
+import DefaultButton from "../DefaultButton/DefaultButton.jsx";
 
 const confIcon = {
   position: "absolute",
@@ -41,43 +44,63 @@ const LoginForm = () => {
     e.preventDefault();
 
     if (!email || !password || emailError)
-      return alert("Por favor, rellena el formulario correctamente");
+      return autoCloseAlert(
+        "Por favor, rellena el formulario correctamente",
+        "error"
+      );
 
-    dispatch(loginUser({ email, password })).unwrap()
-    .then(() => {
-      autoCloseAlert("BIENVENIDO", "success");
-      navigate("/");
-      dispatch(getUser());
-    })
-    .catch((error) => {
-      autoCloseAlert(error.message, "error");
-    });
-    
+    dispatch(loginUser({ email, password }))
+      .unwrap()
+      .then(() => {
+        autoCloseAlert("BIENVENIDO", "success");
+        navigate("/");
+        dispatch(getUser());
+      })
+      .catch((error) => {
+        autoCloseAlert(error.message, "error");
+      });
   };
 
   return (
     <>
       <CssBaseline />
       <Container
-        maxWidth="sm"
+        maxWidth={false}
         sx={{
+          position: 'relative',
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "calc(100dvh - 85px - 65px)",
+          minHeight: "100vh",
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: 'blur(5px)',
+            zIndex: -1,
+          }
         }}
       >
-        <Box
-          className="login"
+        <Box  
           sx={{
-            paddingTop: 1,
+            p: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            backgroundColor: "#f2f2f2",
+            borderRadius: 2,
+            color: "gray",
           }}
         >
-          <Avatar sx={{ m: 2, bgcolor: "primary.main" }}>
-            <LoginIcon />
+          <Avatar sx={{ m: 2, bgcolor: "#ffc139" }}>
+            <LoginIcon sx={{ color: "#333333" }} />
           </Avatar>
           <Typography className="link-to" variant="h5">
             Iniciar Sesión
@@ -131,23 +154,25 @@ const LoginForm = () => {
                 justifyContent: "center",
               }}
             >
-              <button className="login-button" type="submit">
-                Ingresar
-              </button>
+              <DefaultButton
+                buttonText="Iniciar Sesion"
+                onclick={handleSubmit}
+                styles={{ margin: "1rem 0" }}
+              />
             </Box>
             <Box>
-              <Typography className="link-to">
+              <Typography>
                 No tienes una cuenta?
                 <Link
                   to="/register"
                   style={{
                     textDecoration: "none",
-                    color: "blue",
+                    color: "#ffc139",
                     fontWeight: "bolder",
                     marginLeft: 10,
                   }}
                 >
-                  Regístrate
+                  Regístrate aquí
                 </Link>
               </Typography>
             </Box>

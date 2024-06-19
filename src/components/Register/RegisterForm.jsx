@@ -1,5 +1,3 @@
-import "./RegisterForm.css";
-
 import {
   Avatar,
   CssBaseline,
@@ -18,6 +16,11 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { handleError } from "../../utils/handleInputError";
 import clientAxios from "../../utils/clientAxios";
+import { autoCloseAlert } from "../../utils/alerts";
+import Loader from "../Loader/Loader";
+
+import backgroundImage from "../../assets/images/notfound.webp";
+import DefaultButton from "../DefaultButton/DefaultButton";
 
 const strongPasswordRegex =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
@@ -67,26 +70,33 @@ const RegisterForm = () => {
     setLoading(true);
     e.preventDefault();
 
-    if (password !== confirmPassword) setConfirmPasswordError(true);
+    if (password !== confirmPassword) setLoading(false);
+    setConfirmPasswordError(true);
 
-    if (firstnameError || lastnameError || emailError || passwordError || confirmPasswordError) {
+    if (
+      firstnameError ||
+      lastnameError ||
+      emailError ||
+      passwordError ||
+      confirmPasswordError
+    ) {
       setLoading(false);
-      return alert("Por favor, rellena bien el formulario");
+      return autoCloseAlert("Por favor, rellena bien el formulario", "error");
     }
 
     try {
       await clientAxios
         .post(`/users/create`, { firstname, lastname, email, password })
         .then((res) => alert(res.data.message));
-      setFirstname("")
-      setLastname("")
+      setFirstname("");
+      setLastname("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setTimeout(() => navigate("/"), 2000);
     } catch (error) {
       const errorMsg = error.errors?.[0]?.msg;
-      alert(errorMsg || "Ups, ocurrió un error");
+      autoCloseAlert(errorMsg || "Ups, ocurrió un error", "error");
     } finally {
       setLoading(false);
     }
@@ -94,31 +104,49 @@ const RegisterForm = () => {
 
   return (
     <>
+      {loading && <Loader />}
       <CssBaseline />
       <Container
-        maxWidth="sm"
+        maxWidth={false}
         sx={{
-          my: { xs: 12, sm: 2, md: 10 },
+          position: "relative",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "calc(100dvh - 85px - 65px)",
+          minHeight: '100dvh',
+          overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(5px)",
+            zIndex: -1,
+          },
         }}
       >
         <Box
-          className="register"
+          maxWidth="sm"
           sx={{
+            p: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            backgroundColor: "#f2f2f2",
+            borderRadius: 2,
+            color: "gray",
+            my: 2
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "success.main" }}>
-            <PersonAddIcon />
+          <Avatar sx={{ m: 1, bgcolor: "#ffc139" }}>
+            <PersonAddIcon sx={{ color: "#333333" }} />
           </Avatar>
-          <Typography className="link-to" variant="h5">
-            Registrarse
-          </Typography>
+          <Typography variant="h5">Registrarse</Typography>
           <Box
             component="form"
             noValidate
@@ -245,12 +273,6 @@ const RegisterForm = () => {
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12}>
-                <Typography className="link-to">
-                  Al completar el registro, recibirás un correo electrónico con
-                  un link para activar tu cuenta.
-                </Typography>
-              </Grid>
             </Grid>
             <Box
               sx={{
@@ -258,19 +280,21 @@ const RegisterForm = () => {
                 justifyContent: "center",
               }}
             >
-              <button type="submit" className="register-button">
-                Registrarme
-              </button>
+              <DefaultButton
+                buttonText="Registrarse"
+                onclick={handleSubmit}
+                styles={{ margin: "1rem 0" }}
+              />
             </Box>
             <Box display="flex" justifyContent="flex-end">
-              <Typography className="link-to">
+              <Typography>
                 Ya tienes una cuenta?
                 <Link
                   to="/login"
                   style={{
                     textDecoration: "none",
-                    color: "rgb(255, 255, 0)",
-                    fontWeight: "bolder",
+                    color: "#ffc139",
+                    fontWeight: "bolder !important",
                     marginLeft: 10,
                   }}
                 >
