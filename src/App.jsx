@@ -22,6 +22,8 @@ import { getUser } from "./redux/actions/userActions.js";
 import { getUserCart } from "./redux/actions/cartActions.js";
 import { getUserOrders } from "./redux/actions/orderActions.js";
 import ProductDetailsPage from "./pages/ProductDetailsPage.jsx";
+import ProtectedRoutes from "./routes/ProtectedRoutes.jsx";
+import AdminRoutes from "./routes/AdminRoutes.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -32,7 +34,7 @@ const App = () => {
     dispatch(getAllProducts());
     if (isAuthenticated && !loading) {
       dispatch(getUserCart());
-      dispatch(getUserOrders())
+      dispatch(getUserOrders());
     }
   }, [isAuthenticated, dispatch]);
 
@@ -44,15 +46,36 @@ const App = () => {
           <Route path="*" element={<NotFound />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/admin/*" element={<AdminPage />}>
+          <Route path="/categories" element={<FilterCategoriesPage />} />
+          <Route path="/product/:id" element={<ProductDetailsPage />} />
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRoutes>
+                <AdminPage />
+              </AdminRoutes>
+            }
+          >
             <Route path="users" element={<Users />} />
             <Route path="products" element={<Products />} />
             <Route path="orders" element={<Orders />} />
           </Route>
-          <Route path="/categories" element={<FilterCategoriesPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/user-orders" element={<UserOrdersPage />} />
-          <Route path="/product/:id" element={<ProductDetailsPage />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoutes>
+                <CheckoutPage />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/user-orders"
+            element={
+              <ProtectedRoutes>
+                <UserOrdersPage />
+              </ProtectedRoutes>
+            }
+          />
         </Routes>
       </RootLayout>
     </BrowserRouter>

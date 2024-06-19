@@ -1,10 +1,16 @@
-import RegisterForm from "../components/Register/RegisterForm"
-
+import { useSelector } from "react-redux";
+import RegisterForm from "../components/Register/RegisterForm";
+import { autoCloseAlert } from "../utils/alerts";
+import { Navigate } from "react-router-dom";
 
 const RegisterPage = () => {
-  return (
-   <RegisterForm/>
-  )
-}
+  const { isAuthenticated, loading } = useSelector((state) => state.user);
 
-export default RegisterPage
+  if (!loading && isAuthenticated) {
+    autoCloseAlert("Ya estas logueado", "warning");
+    return <Navigate to="/" replace />;
+  }
+  return <RegisterForm />;
+};
+
+export default RegisterPage;

@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import DefaultButton from "../DefaultButton/DefaultButton";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { manageCartProduct } from "../../redux/actions/cartActions";
 import { useEffect, useState } from "react";
 import { autoCloseAlert, customAlert } from "../../utils/alerts";
@@ -49,13 +49,16 @@ const ProductCard = ({ product }) => {
         display: "flex",
         flexDirection: "column",
         p: 1,
+        ":hover": { transition: "all 0.3s ease-in-out", boxShadow: 10 },
       }}
     >
-      <Box
-        component="img"
-        src={product.image}
-        sx={{ width: 150, mx: "auto" }}
-      />
+      <Link to={`/product/${product._id}`} style={{ margin: "auto"}}>
+        <Box
+          component="img"
+          src={product.image}
+          sx={{ width: 150, ":hover": { transform: "scale(1.1)", transition: "all 0.5s ease-in-out", opacity: 0.5 } }}
+        />
+      </Link>
       <Box sx={{ p: 2, flexGrow: 1 }}>
         <Typography
           variant="h5"

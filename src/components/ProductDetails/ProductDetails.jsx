@@ -26,7 +26,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     const isProductInCart = userCart.some(
-      (item) => item.product._id === product._id
+      (item) => item.product._id === product?._id
     );
     setIsInCart(isProductInCart);
   }, [userCart, product]);
