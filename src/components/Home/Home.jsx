@@ -4,6 +4,7 @@ import BestPrices from './BestPrices/BestPrices'
 import Offerts from './Offerts/Offerts'
 import ProductsCategories from './ProductsCategories/ProductsCategories'
 import Newsletter from './Newsletter/Newsletter'
+import Delivery from './Delivery/Delivery'
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
       <BestPrices/>
       <Offerts/>
       <ProductsCategories/>
+      <Delivery/>
       <Newsletter/>
     </Container>
   )

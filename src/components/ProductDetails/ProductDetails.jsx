@@ -94,7 +94,7 @@ const ProductDetails = () => {
             className={isInCart ? "default-button-reverse" : "default-button"}
             styles={{ width: 200, margin: "auto" }}
             icon={
-              loading ? (
+              isAuthenticated && loading ? (
                 <Loader />
               ) : isInCart ? null : (
                 <ShoppingCartOutlinedIcon sx={{ fontSize: 16, mr: 1 }} />
