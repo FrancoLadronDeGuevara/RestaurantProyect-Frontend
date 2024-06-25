@@ -13,7 +13,9 @@ const Home = () => {
       <BestPrices/>
       <Offerts/>
       <ProductsCategories/>
-      <Delivery/>
+      <div id="delivery-section">
+        <Delivery/>
+      </div>
       <Newsletter/>
     </Container>
   )

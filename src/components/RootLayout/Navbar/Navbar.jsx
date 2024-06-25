@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import AutoAwesomeMosaicOutlinedIcon from "@mui/icons-material/AutoAwesomeMosaicOutlined";
 
-import {  useSelector } from "react-redux";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import DefaultButton from "../../DefaultButton/DefaultButton";
 import logoRestaurant from "../../../assets/images/logo.png";
 import HamburguerMenu from "./HamburguerMenu";
@@ -27,17 +27,34 @@ const pages = [
   },
   {
     name: "Envíos",
-    path: "/delivery",
+    path: "#delivery-section",
   },
   {
     name: "Contacto",
-    path: "/contact",
+    path: "#contact-section",
   },
 ];
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, loading } = useSelector((state) => state.user);
+
+  const handleNavClick = (path) => {
+    if (path.startsWith("#")) {
+      const sectionId = path.substring(1);
+      if (location.pathname === "/") {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        navigate("/", { state: { scrollTo: sectionId } });
+      }
+    } else {
+      navigate(path);
+    }
+  };
 
   return (
     <AppBar
@@ -64,6 +81,7 @@ const Navbar = () => {
               <Button
                 key={indexPage}
                 sx={{ my: 2, color: "black", display: "block" }}
+                onClick={() => handleNavClick(page.path)}
               >
                 <Link
                   to={page.path}
@@ -94,7 +112,7 @@ const Navbar = () => {
                   <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
                 </Box>
               )}
-              <UserMenu/>
+              <UserMenu />
             </Box>
           )}
 

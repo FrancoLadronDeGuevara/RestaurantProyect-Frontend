@@ -9,6 +9,7 @@ import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 const Footer = () => {
   return (
     <Container
+      id="contact-section"
       maxWidth={false}
       sx={{ backgroundColor: "#23201E", color: "white" }}
     >
