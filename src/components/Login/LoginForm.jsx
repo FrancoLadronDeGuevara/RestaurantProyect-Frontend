@@ -19,6 +19,7 @@ import { autoCloseAlert } from "../../utils/alerts.js";
 
 import backgroundImage from "../../assets/images/notfound.webp";
 import DefaultButton from "../DefaultButton/DefaultButton.jsx";
+import Loader from "../Loader/Loader.jsx";
 
 const confIcon = {
   position: "absolute",
@@ -37,17 +38,21 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
-    if (!email || !password || emailError)
+    if (!email || !password || emailError) {
+      setIsLoading(false);
       return autoCloseAlert(
         "Por favor, rellena el formulario correctamente",
         "error"
       );
+    }
 
     dispatch(loginUser({ email, password }))
       .unwrap()
@@ -58,37 +63,39 @@ const LoginForm = () => {
       })
       .catch((error) => {
         autoCloseAlert(error.message, "error");
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <>
+      {isLoading && <Loader />}
       <CssBaseline />
       <Container
         maxWidth={false}
         sx={{
-          position: 'relative',
+          position: "relative",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           minHeight: "100vh",
-          overflow: 'hidden',
-          '&::before': {
+          overflow: "hidden",
+          "&::before": {
             content: '""',
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
-            width: '100%',
-            height: '100%',
+            width: "100%",
+            height: "100%",
             backgroundImage: `url(${backgroundImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            filter: 'blur(5px)',
+            filter: "blur(5px)",
             zIndex: -1,
-          }
+          },
         }}
       >
-        <Box  
+        <Box
           sx={{
             p: 2,
             display: "flex",
